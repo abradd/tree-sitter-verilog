@@ -6,8 +6,11 @@ include ""
 
 ----
 
-(source_file (include_compiler_directive (double_quoted_string)))
-
+(source_file
+  (include_compiler_directive
+    (include_directive)
+    (double_quoted_string)))
+    
 ============================================
 include <>
 ============================================
@@ -16,7 +19,10 @@ include <>
 
 ----
 
-(source_file (include_compiler_directive (include_compiler_directive_standard)))
+(source_file
+  (include_compiler_directive
+    (include_directive)
+    (include_compiler_directive_standard)))
 
 ============================================
 define
@@ -28,6 +34,7 @@ define
 
 (source_file
   (text_macro_definition
+    (define_directive)
     (text_macro_name
       (text_macro_identifier (simple_identifier))
     )
@@ -119,6 +126,7 @@ timescale
 
 (source_file
   (timescale_compiler_directive
+    (timescale_directive)
     (time_literal (unsigned_number) (time_unit))
     (time_literal (unsigned_number) (time_unit))))
 
@@ -130,7 +138,10 @@ default_nettype
 
 ----
 
-(source_file (default_nettype_compiler_directive (default_nettype_value)))
+(source_file
+  (default_nettype_compiler_directive
+    (default_nettype_directive)
+    (default_nettype_value)))
 
 ============================================
 line
@@ -142,6 +153,25 @@ line
 
 (source_file
   (line_compiler_directive
+    (line_directive)
     (unsigned_number)
     (double_quoted_string)
     (unsigned_number)))
+
+============================================
+ifdef
+============================================
+
+`ifdef behavioral
+  // pass
+`endif
+
+----
+
+(source_file
+  (id_directive
+    (ifdef_directive_text)
+    (text_macro_identifier (simple_identifier)))
+    (comment)
+    (zero_directive))
+

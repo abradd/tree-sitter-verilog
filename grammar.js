@@ -119,7 +119,7 @@ const rules = {
   ),
 
   include_compiler_directive: $ => seq(
-    directive('include'),
+    alias('`include', $.include_directive),
     choice(
       $.double_quoted_string,
       $.include_compiler_directive_standard
@@ -149,36 +149,45 @@ const rules = {
   /* 22-5 define */
 
   text_macro_definition: $ => seq(
-    directive('define'),
+    alias('`define', $.define_directive),
     $.text_macro_name,
     optional($.macro_text),
     '\n'
-  ),
-
-  /* 22-3 usage */
-
-  text_macro_usage: $ => seq(
-    '`',
-    $.text_macro_identifier,
-    optseq('(', $.list_of_actual_arguments, ')')
-  ),
-
-  simple_text_macro_usage: $ => seq(
-    '`',
-    $.text_macro_identifier
   ),
 
   /* 22-4 22-5 */
 
   id_directive: $ => seq(
     choice(
-      directive('ifdef'),
-      directive('ifndef'),
-      directive('elsif'),
+      alias('`ifdef', $.ifdef_directive_text),
+      alias('`ifndef', $.ifndef_directive_text),
+      alias('`elsif', $.elsif_directive_text),
       directive('undef') /* 22-5-2 */
+        
     ),
     $.text_macro_identifier
   ),
+
+  // ifdef_directive: $ => seq(
+  //     alias("`ifdef", $.ifdef_directive_text),
+  //     $.text_macro_identifier,
+  //     //any valid verilog source
+  //     optional(repeat($.elsif_directive)),
+  //     optional($.else_directive),
+  //     alias("`endif", $.endif_directive_text)
+  // ), 
+
+  // ifndef_directive: $ => seq(
+  //     //TODO
+  // ), 
+    
+  // elsif_directive: $ => seq(
+  //     alias("`elsif", $.elsif_directive_text),
+  //     $.text_macro_identifier,
+  //     //any valid verilog source
+  // ),
+
+  // else_directive: $ => //any valid verilog source
 
   zero_directive: $ => choice(
     directive('resetall'), /* 22-3 */
@@ -194,7 +203,7 @@ const rules = {
   /* 22-7 timescale */
 
   timescale_compiler_directive: $ => seq(
-    directive('timescale'),
+    alias('`timescale', $.timescale_directive),
     $.time_literal, // time_unit,
     '/',
     $.time_literal, // time_precision
@@ -204,7 +213,7 @@ const rules = {
   /* 22-8 default_nettype */
 
   default_nettype_compiler_directive: $ => seq(
-    directive('default_nettype'),
+    alias('`default_nettype', $.default_nettype_directive),
     $.default_nettype_value,
     '\n'
   ),
@@ -222,7 +231,7 @@ const rules = {
   /* 22-12 */
 
   line_compiler_directive: $ => seq(
-    directive('line'),
+    alias('`line', $.line_directive),
     $.unsigned_number,
     $.double_quoted_string,
     $.unsigned_number,
@@ -250,6 +259,21 @@ const rules = {
     $.unconnected_drive,
     $.begin_keywords
   ),
+
+  /* 22-3 usage */
+  // Place text macros below other directives to give it lower precedence
+    
+  text_macro_usage: $ => seq(
+    '`',
+    $.text_macro_identifier,
+    optseq('(', $.list_of_actual_arguments, ')')
+  ),
+
+  simple_text_macro_usage: $ => seq(
+    '`',
+    $.text_macro_identifier,
+  ),
+
 
   // TODO missing arguments, empty list of arguments
 

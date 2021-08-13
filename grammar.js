@@ -4469,42 +4469,63 @@ const rules = {
     $.hex_number
   ),
 
+  // Structure of decimal_number, binary_number etc. limits use of token to allow use of $.simple_text_macro_usage, size must be tokenized with ' to avoid token conflicts
+    
   decimal_number: $ => choice(
     $.unsigned_number,
-    token(seq(
-      optseq(/[1-9][0-9_]*/, /\s*/),
+    seq(
+      token(seq(
+        /[1-9][0-9_]*/,
+        /\s*/,
+        /'[sS]?[dD]/)),
+      /\s*/,
+      $._unsigned_number_or_high_imp),
+    seq(
       /'[sS]?[dD]/,
       /\s*/,
-      /[0-9][0-9_]*/
-    )),
-    token(seq(
-      optseq(/[1-9][0-9_]*/, /\s*/),
-      /'[sS]?[dD]/,
+      $._unsigned_number_or_high_imp)),
+
+  binary_number: $ => choice(
+    seq(
+      token(seq(
+        /[1-9][0-9_]*/,
+        /\s*/,
+        /'[sS]?[bB]/)),
       /\s*/,
-      /[xXzZ?][_]*/
-    ))
+      /[01xXzZ?][01xXzZ?_]*/),
+    seq(
+      /'[sS]?[bB]/,
+      /\s*/,
+      /[01xXzZ?][01xXzZ?_]*/),
   ),
+    
+  octal_number: $ => choice(
+    seq(
+      token(seq(
+        /[1-9][0-9_]*/,
+        /\s*/,
+        /'[sS]?[oO]/)),
+        /\s*/,
+      /[0-7xXzZ?][0-7xXzZ?_]*/),
+    seq( 
+      /'[sS]?[oO]/,
+      /\s*/,
+      /[0-7xXzZ?][0-7xXzZ?_]*/),
+    ),
 
-  binary_number: $ => token(seq(
-    optseq(/[1-9][0-9_]*/, /\s*/),
-    /'[sS]?[bB]/,
-    /\s*/,
-    /[01xXzZ?][01xXzZ?_]*/
-  )),
-
-  octal_number: $ => token(seq(
-    optseq(/[1-9][0-9_]*/, /\s*/),
-    /'[sS]?[oO]/,
-    /\s*/,
-    /[0-7xXzZ?][0-7xXzZ?_]*/
-  )),
-
-  hex_number: $ => token(seq(
-    optseq(/[1-9][0-9_]*/, /\s*/),
-    /'[sS]?[hH]/,
-    /\s*/,
-    /[0-9a-fA-FxXzZ?][0-9a-fA-FxXzZ?_]*/
-  )),
+  hex_number: $ => choice(
+    seq(
+      token(seq(
+        /[1-9][0-9_]*/,
+        /\s*/,
+        /'[sS]?[hH]/)),
+      /\s*/,
+      /[0-9a-fA-FxXzZ?][0-9a-fA-FxXzZ?_]*/),
+    seq(
+      /'[sS]?[hH]/,
+      /\s*/,
+      /[0-9a-fA-FxXzZ?][0-9a-fA-FxXzZ?_]*/),
+  ),
 
   // NOTE: Embedded spaces are illegal.
   non_zero_unsigned_number: $ => token(/[1-9][0-9_]*/),
@@ -4517,6 +4538,10 @@ const rules = {
   fixed_point_number: $ => token(/[0-9][0-9_]*\.[0-9][0-9_]*/),
 
   unsigned_number: $ => token(/[0-9][0-9_]*/),
+    
+  _unsigned_number_or_high_imp: $ => choice(
+    alias($.unsigned_number, 'unsigned_number'),
+    /[xXzZ?][_]*/),
 
   // The apostrophe ( ' ) in unbased_unsized_literal shall not be followed by white_space.
   unbased_unsized_literal: $ => choice('\'0', '\'1', /'[xXzZ]/),

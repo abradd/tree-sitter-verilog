@@ -305,14 +305,14 @@ const rules = {
   /* A.1.2 SystemVerilog source text */
 
   _description: $ => choice(
-    $._directives,
+    // $._directives,
     $.module_declaration,
-    $.udp_declaration,
-    $.interface_declaration,
-    $.program_declaration,
-    $.package_declaration,
-    seq(repeat($.attribute_instance), $._package_item),
-    seq(repeat($.attribute_instance), $.bind_directive)
+    // $.udp_declaration,
+    // $.interface_declaration,
+    // $.program_declaration,
+    // $.package_declaration,
+    // seq(repeat($.attribute_instance), $._package_item),
+    // seq(repeat($.attribute_instance), $.bind_directive)
     // $.config_declaration,
   ),
 
@@ -335,15 +335,15 @@ const rules = {
   // | 'extern' module_ansi_header
 
   module_header: $ => seq(
-    repeat($.attribute_instance),
+    // repeat($.attribute_instance),
     $.module_keyword,
-    optional($.lifetime),
+    // optional($.lifetime),
     $._module_identifier
   ),
 
   module_nonansi_header: $ => seq(
-    repeat($.package_import_declaration),
-    optional($.parameter_port_list),
+    // repeat($.package_import_declaration),
+    // optional($.parameter_port_list),
     $.list_of_ports
   ),
 
@@ -360,18 +360,18 @@ const rules = {
       $.module_header,
       optional(choice(
         $.module_nonansi_header,
-        $.module_ansi_header,
-        seq('(', '.*', ')')
+      //   $.module_ansi_header,
+        // seq('(', '.*', ')')
       )),
       ';',
-      optional($.timeunits_declaration),
+      // optional($.timeunits_declaration),
       repeat($._module_item),
       'endmodule', optseq(':', $._module_identifier)
     ),
-    seq('extern', $.module_header, choice(
-      $.module_nonansi_header,
-      $.module_ansi_header
-    ))
+    // seq('extern', $.module_header, choice(
+    //   $.module_nonansi_header,
+    //   $.module_ansi_header
+    // ))
   ),
 
   module_keyword: $ => choice('module', 'macromodule'),
@@ -560,11 +560,11 @@ const rules = {
 
   list_of_ports: $ => seq(
     '(',
-    optional(sep1(',', seq(
-      optional($.line_compiler_directive),
-      $.port,
-      optional($.line_compiler_directive)
-    ))),
+    // optional(sep1(',', seq(
+    //   optional($.line_compiler_directive),
+    //   $.port,
+    //   optional($.line_compiler_directive)
+    // ))),
     ')'
   ),
 
@@ -662,33 +662,33 @@ const rules = {
   finish_number: $ => choice('0', '1', '2'),
 
   _module_common_item: $ => choice(
-    $._module_or_generate_item_declaration,
-    $.interface_instantiation,
-    $.program_instantiation,
-    $._assertion_item,
-    $.bind_directive,
+    // $._module_or_generate_item_declaration,
+    // $.interface_instantiation,
+    // $.program_instantiation,
+    // $._assertion_item,
+    // $.bind_directive,
     $.continuous_assign,
-    $.net_alias,
-    $.initial_construct,
-    $.final_construct,
-    $.always_construct,
-    $.loop_generate_construct,
-    $._conditional_generate_construct,
-    $.elaboration_system_task
+    // $.net_alias,
+    // $.initial_construct,
+    // $.final_construct,
+    // $.always_construct,
+    // $.loop_generate_construct,
+    // $._conditional_generate_construct,
+    // $.elaboration_system_task
   ),
 
   _module_item: $ => choice(
-    seq($.port_declaration, ';'),
+    // seq($.port_declaration, ';'),
     $._non_port_module_item
   ),
 
   module_or_generate_item: $ => seq(
-    repeat($.attribute_instance),
+    // repeat($.attribute_instance),
     choice(
-      $.parameter_override,
-      $.gate_instantiation,
-      $.udp_instantiation,
-      $.module_instantiation,
+      // $.parameter_override,
+      // $.gate_instantiation,
+      // $.udp_instantiation,
+      // $.module_instantiation,
       $._module_common_item
     )
   ),
@@ -702,15 +702,15 @@ const rules = {
   ),
 
   _non_port_module_item: $ => choice(
-    $._directives,
-    $.generate_region,
+    // $._directives,
+    // $.generate_region,
     $.module_or_generate_item,
-    $.specify_block,
-    seq(repeat($.attribute_instance), $.specparam_declaration),
-    $.program_declaration,
-    $.module_declaration,
-    $.interface_declaration,
-    $.timeunits_declaration
+    // $.specify_block,
+    // seq(repeat($.attribute_instance), $.specparam_declaration),
+    // $.program_declaration,
+    // $.module_declaration,
+    // $.interface_declaration,
+    // $.timeunits_declaration
   ),
 
   parameter_override: $ => seq(
@@ -2877,13 +2877,13 @@ const rules = {
     'assign',
     choice(
       seq(
-        optional($.drive_strength),
-        optional($.delay3),
+        // optional($.drive_strength),
+        // optional($.delay3),
         $.list_of_net_assignments
       ),
       seq(
-        optional($.delay_control),
-        $.list_of_variable_assignments
+        // optional($.delay_control),
+        // $.list_of_variable_assignments
       )
     ),
     ';'
@@ -4143,28 +4143,28 @@ const rules = {
   expression: $ => choice(
     $.primary,
 
-    prec.left(PREC.UNARY, seq(
-      $.unary_operator, repeat($.attribute_instance), $.primary
-    )),
-    prec.left(PREC.UNARY, $.inc_or_dec_expression),
-    prec.left(PREC.PARENT, seq('(', $.operator_assignment, ')')),
+    // prec.left(PREC.UNARY, seq(
+    //   $.unary_operator, repeat($.attribute_instance), $.primary
+    // )),
+    // prec.left(PREC.UNARY, $.inc_or_dec_expression),
+    // prec.left(PREC.PARENT, seq('(', $.operator_assignment, ')')),
 
-    exprOp($, PREC.ADD, choice('+', '-')),
-    exprOp($, PREC.MUL, choice('*', '/', '%')),
-    exprOp($, PREC.EQUAL, choice('==', '!=', '===', '!==', '==?', '!=?')),
-    exprOp($, PREC.LOGICAL_AND, '&&'),
-    exprOp($, PREC.LOGICAL_OR, '||'),
-    exprOp($, PREC.POW, '**'),
-    exprOp($, PREC.RELATIONAL, choice('<', '<=', '>', '>=')),
-    exprOp($, PREC.AND, '&'),
-    exprOp($, PREC.OR, '|'),
-    exprOp($, PREC.XOR, choice('^', '^~', '~^')),
-    exprOp($, PREC.SHIFT, choice('>>', '<<', '>>>', '<<<')),
-    exprOp($, PREC.IMPLICATION, choice('->', '<->')),
+    // exprOp($, PREC.ADD, choice('+', '-')),
+    // exprOp($, PREC.MUL, choice('*', '/', '%')),
+    // exprOp($, PREC.EQUAL, choice('==', '!=', '===', '!==', '==?', '!=?')),
+    // exprOp($, PREC.LOGICAL_AND, '&&'),
+    // exprOp($, PREC.LOGICAL_OR, '||'),
+    // exprOp($, PREC.POW, '**'),
+    // exprOp($, PREC.RELATIONAL, choice('<', '<=', '>', '>=')),
+    // exprOp($, PREC.AND, '&'),
+    // exprOp($, PREC.OR, '|'),
+    // exprOp($, PREC.XOR, choice('^', '^~', '~^')),
+    // exprOp($, PREC.SHIFT, choice('>>', '<<', '>>>', '<<<')),
+    // exprOp($, PREC.IMPLICATION, choice('->', '<->')),
 
-    $.conditional_expression,
-    $.inside_expression,
-    $.tagged_union_expression
+    // $.conditional_expression,
+    // $.inside_expression,
+    // $.tagged_union_expression
   ),
 
   tagged_union_expression: $ => prec.left(seq(
@@ -4261,24 +4261,24 @@ const rules = {
 
   primary: $ => choice(
     $.primary_literal,
-    seq(
-      optional(choice($.class_qualifier, $.package_scope)),
-      $.hierarchical_identifier,
-      optional($.select1)
-    ),
-    $.empty_unpacked_array_concatenation,
-    seq($.concatenation, optseq('[', $.range_expression, ']')),
-    seq($.multiple_concatenation, optseq('[', $.range_expression, ']')),
-    $.function_subroutine_call,
-    $.let_expression,
-    seq('(', $.mintypmax_expression, ')'),
-    $.cast,
-    $.assignment_pattern_expression,
-    $.streaming_concatenation,
-    $.sequence_method_call,
-    'this',
-    '$',
-    'null'
+    // seq(
+    //   optional(choice($.class_qualifier, $.package_scope)),
+    //   $.hierarchical_identifier,
+    //   optional($.select1)
+    // ),
+    // $.empty_unpacked_array_concatenation,
+    // seq($.concatenation, optseq('[', $.range_expression, ']')),
+    // seq($.multiple_concatenation, optseq('[', $.range_expression, ']')),
+    // $.function_subroutine_call,
+    // $.let_expression,
+    // seq('(', $.mintypmax_expression, ')'),
+    // $.cast,
+    // $.assignment_pattern_expression,
+    // $.streaming_concatenation,
+    // $.sequence_method_call,
+    // 'this',
+    // '$',
+    // 'null'
   ),
 
   class_qualifier: $ => seq(
@@ -4298,10 +4298,10 @@ const rules = {
 
   primary_literal: $ => choice(
     $._number,
-    $.time_literal,
+    // $.time_literal,
     $.unbased_unsized_literal,
-    $.string_literal,
-    $.simple_text_macro_usage
+    // $.string_literal,
+    // $.simple_text_macro_usage
   ),
 
   time_literal: $ => choice(
@@ -4395,11 +4395,11 @@ const rules = {
   net_lvalue: $ => choice(
     seq(
       $.ps_or_hierarchical_net_identifier,
-      optional($.constant_select1)
+      // optional($.constant_select1)
     ),
     prec.left(PREC.CONCAT, seq('{', sep1(',', $.net_lvalue), '}')),
     seq(
-      optional($._assignment_pattern_expression_type),
+      // optional($._assignment_pattern_expression_type),
       $.assignment_pattern_net_lvalue
     )
   ),
@@ -4653,8 +4653,9 @@ const rules = {
   ),
 
   ps_or_hierarchical_net_identifier: $ => choice(
-    prec.left(PREC.PARENT, seq(optional($.package_scope), $._net_identifier)),
-    $._hierarchical_net_identifier
+    // prec.left(PREC.PARENT, seq(optional($.package_scope), $._net_identifier)),
+    $._net_identifier,
+    // $._hierarchical_net_identifier
   ),
 
   ps_or_hierarchical_property_identifier: $ => choice(
@@ -4791,222 +4792,224 @@ module.exports = grammar({
     $.cross_identifier
   ],
 
-  conflicts: $ => [
+    conflicts: $ => [
+      // [$.decimal_number_value, $.decimal_number_xz, $.unsigned_number ]
+    ]
 
-    [$.constant_primary, $.primary],
-    [$.primary, $.implicit_class_handle],
-    [$.primary, $.constant_function_call],
-    [$.primary, $.param_expression],
-    [$.primary, $._constant_let_expression],
-    [$.primary, $.queue_dimension],
+  //   [$.constant_primary, $.primary],
+  //   [$.primary, $.implicit_class_handle],
+  //   [$.primary, $.constant_function_call],
+  //   [$.primary, $.param_expression],
+  //   [$.primary, $._constant_let_expression],
+  //   [$.primary, $.queue_dimension],
 
-    [$._module_common_item, $._checker_or_generate_item],
-    [$._module_common_item, $._checker_generate_item],
+  //   [$._module_common_item, $._checker_or_generate_item],
+  //   [$._module_common_item, $._checker_generate_item],
 
-    [$.dpi_function_import_property, $.dpi_task_import_property],
+  //   [$.dpi_function_import_property, $.dpi_task_import_property],
 
-    [$.package_or_generate_item_declaration, $.checker_or_generate_item_declaration],
-    [$._module_or_generate_item_declaration, $.checker_or_generate_item_declaration],
+  //   [$.package_or_generate_item_declaration, $.checker_or_generate_item_declaration],
+  //   [$._module_or_generate_item_declaration, $.checker_or_generate_item_declaration],
 
-    [$.module_or_generate_item, $.interface_or_generate_item],
-    [$.method_call_body, $.array_method_name],
-    [$.constraint_set, $.empty_unpacked_array_concatenation],
-    [$.interface_declaration, $._non_port_interface_item],
-    [$.program_declaration, $.non_port_program_item],
-    [$.list_of_ports, $.list_of_port_declarations],
+  //   [$.module_or_generate_item, $.interface_or_generate_item],
+  //   [$.method_call_body, $.array_method_name],
+  //   [$.constraint_set, $.empty_unpacked_array_concatenation],
+  //   [$.interface_declaration, $._non_port_interface_item],
+  //   [$.program_declaration, $.non_port_program_item],
+  //   [$.list_of_ports, $.list_of_port_declarations],
 
-    [$.mintypmax_expression, $.expression_or_dist],
+  //   [$.mintypmax_expression, $.expression_or_dist],
 
-    [$.class_constructor_declaration, $.implicit_class_handle],
-    [$.statement_or_null, $.action_block],
+  //   [$.class_constructor_declaration, $.implicit_class_handle],
+  //   [$.statement_or_null, $.action_block],
 
-    //
-    [$.port_reference, $.ansi_port_declaration],
-    [$.port, $.ansi_port_declaration],
-    [$.net_port_header1, $.variable_port_header],
-    [$.ansi_port_declaration, $._variable_dimension],
+  //   //
+  //   [$.port_reference, $.ansi_port_declaration],
+  //   [$.port, $.ansi_port_declaration],
+  //   [$.net_port_header1, $.variable_port_header],
+  //   [$.ansi_port_declaration, $._variable_dimension],
 
-    [$.module_declaration, $._non_port_module_item],
-    [$._expression_or_cond_pattern, $.tagged_union_expression],
-    [$.pattern, $.tagged_union_expression],
+  //   [$.module_declaration, $._non_port_module_item],
+  //   [$._expression_or_cond_pattern, $.tagged_union_expression],
+  //   [$.pattern, $.tagged_union_expression],
 
-    [$.mintypmax_expression, $._covergroup_expression],
-    [$.concatenation, $._covergroup_expression],
+  //   [$.mintypmax_expression, $._covergroup_expression],
+  //   [$.concatenation, $._covergroup_expression],
 
-    [$.concatenation, $.stream_expression],
+  //   [$.concatenation, $.stream_expression],
 
-    [$.delay2, $.delay_control],
-    [$.delay3, $.delay_control],
-    [$.delay_control, $.param_expression],
-    [$.delay2, $.delay_control, $.param_expression],
+  //   [$.delay2, $.delay_control],
+  //   [$.delay3, $.delay_control],
+  //   [$.delay_control, $.param_expression],
+  //   [$.delay2, $.delay_control, $.param_expression],
 
-    [$.property_spec, $.property_expr],
-    [$.property_expr, $.sequence_expr],
+  //   [$.property_spec, $.property_expr],
+  //   [$.property_expr, $.sequence_expr],
 
-    [$.select1, $.bit_select1],
-    [$.select1, $.nonrange_select1],
-    //
-    [$.class_method, $.constraint_prototype_qualifier],
-    [$.class_method, $.method_qualifier],
-    //
-    [$.bind_target_scope, $.bind_target_instance],
-    [$.class_type, $.package_scope],
+  //   [$.select1, $.bit_select1],
+  //   [$.select1, $.nonrange_select1],
+  //   //
+  //   [$.class_method, $.constraint_prototype_qualifier],
+  //   [$.class_method, $.method_qualifier],
+  //   //
+  //   [$.bind_target_scope, $.bind_target_instance],
+  //   [$.class_type, $.package_scope],
 
-    [$.data_type_or_implicit1, $._var_data_type],
-    [$.list_of_port_identifiers, $.list_of_variable_identifiers],
-    [$.list_of_port_identifiers, $.list_of_variable_port_identifiers],
+  //   [$.data_type_or_implicit1, $._var_data_type],
+  //   [$.list_of_port_identifiers, $.list_of_variable_identifiers],
+  //   [$.list_of_port_identifiers, $.list_of_variable_port_identifiers],
 
-    [$.list_of_interface_identifiers, $.net_decl_assignment],
+  //   [$.list_of_interface_identifiers, $.net_decl_assignment],
 
-    [$.class_type, $.tf_port_item1, $.data_type],
+  //   [$.class_type, $.tf_port_item1, $.data_type],
 
-    [$.net_port_type1, $.interface_port_header, $.data_type, $.class_type],
-    [$.net_port_type1, $.data_type, $.class_type],
+  //   [$.net_port_type1, $.interface_port_header, $.data_type, $.class_type],
+  //   [$.net_port_type1, $.data_type, $.class_type],
 
-    [$.list_of_port_identifiers, $._variable_dimension],
+  //   [$.list_of_port_identifiers, $._variable_dimension],
 
 
-    [$.property_expr, $._sequence_actual_arg],
+  //   [$.property_expr, $._sequence_actual_arg],
 
-    [$.event_control, $._hierarchical_event_identifier, $._sequence_identifier],
-    [$.event_control, $._hierarchical_event_identifier],
+  //   [$.event_control, $._hierarchical_event_identifier, $._sequence_identifier],
+  //   [$.event_control, $._hierarchical_event_identifier],
 
-    [$.sequence_list_of_arguments, $.let_list_of_arguments],
+  //   [$.sequence_list_of_arguments, $.let_list_of_arguments],
 
-    [$.input_identifier, $.output_identifier],
+  //   [$.input_identifier, $.output_identifier],
 
-    [$.constant_primary, $.path_delay_expression],
-    [$.unary_operator, $.scalar_timing_check_condition],
-    [$.mintypmax_expression, $.scalar_timing_check_condition],
+  //   [$.constant_primary, $.path_delay_expression],
+  //   [$.unary_operator, $.scalar_timing_check_condition],
+  //   [$.mintypmax_expression, $.scalar_timing_check_condition],
 
-    [$.delayed_data, $.delayed_reference],
-    [$.system_tf_call, $.list_of_arguments_parent],
-    [$.class_item_qualifier, $.lifetime],
-    [$._property_qualifier, $.method_qualifier],
-    [$.class_property, $.data_type_or_implicit1],
+  //   [$.delayed_data, $.delayed_reference],
+  //   [$.system_tf_call, $.list_of_arguments_parent],
+  //   [$.class_item_qualifier, $.lifetime],
+  //   [$._property_qualifier, $.method_qualifier],
+  //   [$.class_property, $.data_type_or_implicit1],
 
-    [$.mintypmax_expression, $.list_of_arguments_parent],
+  //   [$.mintypmax_expression, $.list_of_arguments_parent],
 
-    [$.module_path_primary, $.tf_call],
+  //   [$.module_path_primary, $.tf_call],
 
-    [$.package_declaration, $._package_item],
+  //   [$.package_declaration, $._package_item],
 
-    [$.deferred_immediate_assertion_item, $.generate_block_identifier, $.concurrent_assertion_item],
+  //   [$.deferred_immediate_assertion_item, $.generate_block_identifier, $.concurrent_assertion_item],
 
-    [$.variable_lvalue, $.clockvar],
-    [$.combinational_entry, $._seq_input_list],
-  ]
-    .concat(combi([
-      $.constant_primary,
-      $.primary,
-      $.let_expression,
-      $.tf_call,
-      $.select_expression,
-    ]))
-    .concat(combi([
-      $.constant_primary,
-      // $._simple_type,
-      $.primary,
-      $.variable_lvalue,
-      $.net_lvalue,
-      $.port_reference,
-      $.sequence_instance,
-      $.let_expression,
-      // $.pattern,
-      $.tf_call,
-      // $.terminal_identifier,
-      // $.select_expression,
-      $.generate_block_identifier,
-      $._sequence_identifier,
-      $._assignment_pattern_expression_type,
-      $.list_of_arguments_parent,
-      $.module_path_primary,
-      $.data_type,
-      $.class_type,
-    ]))
-    .concat(combi([
-      $.primary, // +
-      $.sequence_instance, // +
-      $.let_expression, // ++
-      $.tf_call, // ++
-      $.terminal_identifier, // ++
-      $._sequence_identifier, // +
-    ]))
-    .concat(combi([
-      $.variable_lvalue,
-      $.net_lvalue,
-    ]))
-    .concat(combi([
-      $.constant_primary,
-      $._simple_type,
-      $.primary,
-      $.generate_block_identifier,
-    ]))
-    .concat(combi([
-      $.module_instantiation,
-      $.net_declaration,
-      $.net_type_declaration,
-      $.interface_port_declaration,
-      $.interface_instantiation,
-      $.program_instantiation,
-      $.udp_instantiation,
-      $.checker_instantiation,
-      $.data_type,
-      $.class_type,
-    ]))
-    .concat(combi([
-      $.variable_lvalue,
-      $.nonrange_variable_lvalue,
-      $._method_call_root,
-      $.class_qualifier
-    ]))
-    .concat(combi([
-      $.variable_decl_assignment,
-      $.packed_dimension,
-      $._variable_dimension
-    ]))
-    .concat(combi([
-      $.constant_primary,
-      $._simple_type,
-      $._assignment_pattern_expression_type,
-      $.class_qualifier,
-      $.data_type,
-    ]))
-    .concat(combi([
-      $._constant_range_expression,
-      // $.constant_bit_select1,
-      $.constant_select1,
-      $.unpacked_dimension,
-    ]))
-    .concat(combi([
-      $.packed_dimension,
-      $.unpacked_dimension,
-      $._constant_part_select_range,
-      $._part_select_range
-    ]))
-    .concat(combi([
-      $.inout_port_identifier, $.input_port_identifier, $.output_port_identifier
-    ]))
-    .concat(combi([
-      $.named_port_connection,
-      $.hierarchical_instance,
-      $.checker_instantiation
-    ]))
-    .concat(combi([
-      $.named_port_connection,
-      $.ordered_port_connection,
-      $._sequence_actual_arg,
-      $.expression_or_dist,
-      $.let_actual_arg,
-      $.list_of_arguments_parent,
-      $.event_expression,
-    ]))
-    .concat(combi([
-      $.primary,
-      $.module_path_primary,
-      $.constant_function_call,
-      $.primary_literal,
-    ]))
+  //   [$.variable_lvalue, $.clockvar],
+  //   [$.combinational_entry, $._seq_input_list],
+  // ]
+  //   .concat(combi([
+  //     $.constant_primary,
+  //     $.primary,
+  //     $.let_expression,
+  //     $.tf_call,
+  //     $.select_expression,
+  //   ]))
+  //   .concat(combi([
+  //     $.constant_primary,
+  //     // $._simple_type,
+  //     $.primary,
+  //     $.variable_lvalue,
+  //     $.net_lvalue,
+  //     $.port_reference,
+  //     $.sequence_instance,
+  //     $.let_expression,
+  //     // $.pattern,
+  //     $.tf_call,
+  //     // $.terminal_identifier,
+  //     // $.select_expression,
+  //     $.generate_block_identifier,
+  //     $._sequence_identifier,
+  //     $._assignment_pattern_expression_type,
+  //     $.list_of_arguments_parent,
+  //     $.module_path_primary,
+  //     $.data_type,
+  //     $.class_type,
+  //   ]))
+  //   .concat(combi([
+  //     $.primary, // +
+  //     $.sequence_instance, // +
+  //     $.let_expression, // ++
+  //     $.tf_call, // ++
+  //     $.terminal_identifier, // ++
+  //     $._sequence_identifier, // +
+  //   ]))
+  //   .concat(combi([
+  //     $.variable_lvalue,
+  //     $.net_lvalue,
+  //   ]))
+  //   .concat(combi([
+  //     $.constant_primary,
+  //     $._simple_type,
+  //     $.primary,
+  //     $.generate_block_identifier,
+  //   ]))
+  //   .concat(combi([
+  //     $.module_instantiation,
+  //     $.net_declaration,
+  //     $.net_type_declaration,
+  //     $.interface_port_declaration,
+  //     $.interface_instantiation,
+  //     $.program_instantiation,
+  //     $.udp_instantiation,
+  //     $.checker_instantiation,
+  //     $.data_type,
+  //     $.class_type,
+  //   ]))
+  //   .concat(combi([
+  //     $.variable_lvalue,
+  //     $.nonrange_variable_lvalue,
+  //     $._method_call_root,
+  //     $.class_qualifier
+  //   ]))
+  //   .concat(combi([
+  //     $.variable_decl_assignment,
+  //     $.packed_dimension,
+  //     $._variable_dimension
+  //   ]))
+  //   .concat(combi([
+  //     $.constant_primary,
+  //     $._simple_type,
+  //     $._assignment_pattern_expression_type,
+  //     $.class_qualifier,
+  //     $.data_type,
+  //   ]))
+  //   .concat(combi([
+  //     $._constant_range_expression,
+  //     // $.constant_bit_select1,
+  //     $.constant_select1,
+  //     $.unpacked_dimension,
+  //   ]))
+  //   .concat(combi([
+  //     $.packed_dimension,
+  //     $.unpacked_dimension,
+  //     $._constant_part_select_range,
+  //     $._part_select_range
+  //   ]))
+  //   .concat(combi([
+  //     $.inout_port_identifier, $.input_port_identifier, $.output_port_identifier
+  //   ]))
+  //   .concat(combi([
+  //     $.named_port_connection,
+  //     $.hierarchical_instance,
+  //     $.checker_instantiation
+  //   ]))
+  //   .concat(combi([
+  //     $.named_port_connection,
+  //     $.ordered_port_connection,
+  //     $._sequence_actual_arg,
+  //     $.expression_or_dist,
+  //     $.let_actual_arg,
+  //     $.list_of_arguments_parent,
+  //     $.event_expression,
+  //   ]))
+  //   .concat(combi([
+  //     $.primary,
+  //     $.module_path_primary,
+  //     $.constant_function_call,
+  //     $.primary_literal,
+  //   ]))
 });
 
 /* eslint camelcase: 0 */

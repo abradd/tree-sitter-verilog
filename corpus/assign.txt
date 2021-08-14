@@ -68,3 +68,34 @@ endmodule
   (module_or_generate_item (continuous_assign (list_of_net_assignments (net_assignment
     (net_lvalue (simple_identifier))
     (expression (primary (primary_literal (integral_number (decimal_number)))))))))))
+
+============================================
+assign - constants: macro substitution decimal 
+============================================
+
+module mod ();
+
+  assign baz = `MACRO'd987654;
+  assign baz = 'd`MACRO;
+  assign baz = 12'd `MACRO;
+  assign baz = `MACRO 'd 987654;
+
+endmodule
+
+----
+
+(source_file (module_declaration
+  (module_header (module_keyword) (simple_identifier))
+  (module_nonansi_header (list_of_ports))
+  (module_or_generate_item (continuous_assign (list_of_net_assignments (net_assignment
+    (net_lvalue (simple_identifier))
+    (expression (primary (primary_literal (integral_number (decimal_number (simple_text_macro_usage (simple_identifier)))))))))))
+  (module_or_generate_item (continuous_assign (list_of_net_assignments (net_assignment
+    (net_lvalue (simple_identifier))
+    (expression (primary (primary_literal (integral_number (decimal_number (simple_text_macro_usage (simple_identifier)))))))))))
+  (module_or_generate_item (continuous_assign (list_of_net_assignments (net_assignment
+    (net_lvalue (simple_identifier))
+    (expression (primary (primary_literal (integral_number (decimal_number (simple_text_macro_usage (simple_identifier)))))))))))
+  (module_or_generate_item (continuous_assign (list_of_net_assignments (net_assignment
+    (net_lvalue (simple_identifier))
+    (expression (primary (primary_literal (integral_number (decimal_number (simple_text_macro_usage (simple_identifier)))))))))))))

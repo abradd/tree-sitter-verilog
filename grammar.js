@@ -271,7 +271,7 @@ const rules = {
 
   simple_text_macro_usage: $ => seq(
     '`',
-    $.text_macro_identifier,
+    $._identifier,
   ),
 
 
@@ -4474,16 +4474,26 @@ const rules = {
   decimal_number: $ => choice(
     $.unsigned_number,
     seq(
-      token(seq(
-        /[1-9][0-9_]*/,
-        /\s*/,
-        /'[sS]?[dD]/)),
+      choice(
+        token(seq(
+          /[1-9][0-9_]*/,
+          /\s*/,
+          /'[sS]?[dD]/)),
+        seq(
+          $.simple_text_macro_usage,
+          /\s*/,
+          /'[sS]?[dD]/)),
       /\s*/,
-      $._unsigned_number_or_high_imp),
+      choice(
+        $._unsigned_number_or_high_imp,
+        $.simple_text_macro_usage)),
     seq(
       /'[sS]?[dD]/,
       /\s*/,
-      $._unsigned_number_or_high_imp)),
+      choice(
+        $._unsigned_number_or_high_imp,
+        $.simple_text_macro_usage))
+  ),
 
   binary_number: $ => choice(
     seq(
